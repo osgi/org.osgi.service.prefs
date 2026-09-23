@@ -1,5 +1,4 @@
 # Set javac settings from JDT prefs
--include: ${includes}/jdt.bnd, ${includes}/cmpn.bnd
 
 Bundle-Activator			= ${p}.Activator
 Bundle-Description			= OSGi Preferences Service Reference Implementation by Sun Microsystems.
@@ -9,6 +8,4 @@ Export-Service				= org.osgi.service.prefs.PreferencesService
 
 -privatepackage 			= ${p}.*
 
--buildpath = \
-	org.osgi.service.prefs;version=latest, \
-	org.osgi.framework;maven-scope=provided;version=1.8
+p: org.osgi.impl.service.prefs
