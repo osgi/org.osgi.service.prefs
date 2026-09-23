@@ -1,0 +1,11 @@
+# Set javac settings from JDT prefs
+
+Bundle-Activator			= ${p}.Activator
+Bundle-Description			= OSGi Preferences Service Reference Implementation by Sun Microsystems.
+Bundle-Vendor				= Sun Microsystems, Inc.
+
+Export-Service				= org.osgi.service.prefs.PreferencesService
+
+-privatepackage 			= ${p}.*
+
+p: org.osgi.impl.service.prefs
