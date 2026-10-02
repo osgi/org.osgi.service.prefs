@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.osgi.service.prefs","l":"BackingStoreException"},{"p":"org.osgi.service.prefs","l":"Preferences"},{"p":"org.osgi.service.prefs","l":"PreferencesService"}];updateSearchResults();
