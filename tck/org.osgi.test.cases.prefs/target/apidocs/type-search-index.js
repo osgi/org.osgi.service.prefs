@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.osgi.test.cases.prefs.junit","l":"PrefsControl"},{"p":"org.osgi.test.cases.prefs.junit","l":"SignatureTestCase"}];updateSearchResults();

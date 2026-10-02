@@ -1,0 +1,4 @@
+org/osgi/service/prefs/PreferencesService.class
+org/osgi/service/prefs/package-info.class
+org/osgi/service/prefs/BackingStoreException.class
+org/osgi/service/prefs/Preferences.class

@@ -1,0 +1,8 @@
+/home/stbischof/git/OSGI_MIGRATE/osgi_target/org.osgi.service.prefs/tck/org.osgi.impl.service.prefs/src/main/java/org/osgi/impl/service/prefs/AbstractPreferences.java
+/home/stbischof/git/OSGI_MIGRATE/osgi_target/org.osgi.service.prefs/tck/org.osgi.impl.service.prefs/src/main/java/org/osgi/impl/service/prefs/Activator.java
+/home/stbischof/git/OSGI_MIGRATE/osgi_target/org.osgi.service.prefs/tck/org.osgi.impl.service.prefs/src/main/java/org/osgi/impl/service/prefs/Base64.java
+/home/stbischof/git/OSGI_MIGRATE/osgi_target/org.osgi.service.prefs/tck/org.osgi.impl.service.prefs/src/main/java/org/osgi/impl/service/prefs/InvalidPreferencesFormatException.java
+/home/stbischof/git/OSGI_MIGRATE/osgi_target/org.osgi.service.prefs/tck/org.osgi.impl.service.prefs/src/main/java/org/osgi/impl/service/prefs/PreferencesServiceImpl.java
+/home/stbischof/git/OSGI_MIGRATE/osgi_target/org.osgi.service.prefs/tck/org.osgi.impl.service.prefs/src/main/java/org/osgi/impl/service/prefs/SimplePreferences.java
+/home/stbischof/git/OSGI_MIGRATE/osgi_target/org.osgi.service.prefs/tck/org.osgi.impl.service.prefs/src/main/java/org/osgi/impl/service/prefs/SimpleRootPref.java
+/home/stbischof/git/OSGI_MIGRATE/osgi_target/org.osgi.service.prefs/tck/org.osgi.impl.service.prefs/src/main/java/org/osgi/impl/service/prefs/TextFileSupport.java

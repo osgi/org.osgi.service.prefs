@@ -1,0 +1,12 @@
+org/osgi/impl/service/prefs/PreferencesServiceImpl.class
+org/osgi/impl/service/prefs/SimplePreferences.class
+org/osgi/impl/service/prefs/SimpleRootPref.class
+org/osgi/impl/service/prefs/InvalidPreferencesFormatException.class
+org/osgi/impl/service/prefs/SimpleRootPref$2.class
+org/osgi/impl/service/prefs/Base64.class
+org/osgi/impl/service/prefs/PreferencesServiceImpl$1.class
+org/osgi/impl/service/prefs/TextFileSupport.class
+org/osgi/impl/service/prefs/SimpleRootPref$3.class
+org/osgi/impl/service/prefs/Activator.class
+org/osgi/impl/service/prefs/SimpleRootPref$1.class
+org/osgi/impl/service/prefs/AbstractPreferences.class

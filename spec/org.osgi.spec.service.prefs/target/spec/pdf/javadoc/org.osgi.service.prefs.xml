@@ -1,0 +1,1398 @@
+<section xmlns="http://docbook.org/ns/docbook"
+         xreflabel="org.osgi.service.prefs"
+         version="5"
+         role="package"
+         xml:id="org.osgi.service.prefs">
+   <title>org.osgi.service.prefs</title>
+   <info>
+      <releaseinfo xml:id="org.osgi.service.prefs-version">Version 1.1</releaseinfo>
+      <edition xml:id="org.osgi.service.prefs-version.number">1.1</edition>
+   </info>
+   <para>
+Preferences Service Package Version 1.1.
+ 
+ </para>
+   <para>
+ Bundles wishing to use this package must list the package in the
+ Import-Package header of the bundle's manifest. This package has two types of
+ users: the consumers that use the API in this package and the providers that
+ implement the API in this package.
+ 
+ </para>
+   <para>
+ Example import for consumers using the API in this package:
+ </para>
+   <para>
+ {@code  Import-Package: org.osgi.service.prefs; version="[1.1,2.0)"}
+ </para>
+   <para>
+ Example import for providers implementing the API in this package:
+ </para>
+   <para>
+ {@code  Import-Package: org.osgi.service.prefs; version="[1.1,1.2)"}</para>
+   <section role="summary">
+      <title>Summary</title>
+      <itemizedlist>
+         <listitem>
+            <para>
+               <link linkend="org.osgi.service.prefs.BackingStoreException">
+                  <code>BackingStoreException</code>
+               </link> - 
+Thrown to indicate that a preferences operation could not complete because of
+ a failure in the backing store, or a failure to contact the backing store.
+   </para>
+         </listitem>
+         <listitem>
+            <para>
+               <link linkend="org.osgi.service.prefs.Preferences">
+                  <code>Preferences</code>
+               </link> - 
+A node in a hierarchical collection of preference data.
+   </para>
+         </listitem>
+         <listitem>
+            <para>
+               <link linkend="org.osgi.service.prefs.PreferencesService">
+                  <code>PreferencesService</code>
+               </link> - 
+The Preferences Service.
+   </para>
+         </listitem>
+      </itemizedlist>
+   </section>
+   <section xreflabel="BackingStoreException"
+            role="class"
+            xml:id="org.osgi.service.prefs.BackingStoreException">
+      <title>public class BackingStoreException<?line-break?> extends Exception</title>
+      <para>
+Thrown to indicate that a preferences operation could not complete because of
+ a failure in the backing store, or a failure to contact the backing store.
+   </para>
+      <section xreflabel="BackingStoreException(String)"
+               role="method"
+               xml:id="org.osgi.service.prefs.BackingStoreException.BackingStoreException-String-">
+         <title>public  BackingStoreException(String message)</title>
+         <formalpara role="parameter">
+            <title>message</title>
+            <para>The detail message.</para>
+         </formalpara>
+         <para role="description">
+Constructs a {@code BackingStoreException} with the specified detail
+ message.
+   </para>
+      </section>
+      <section xreflabel="BackingStoreException(String,Throwable)"
+               role="method"
+               xml:id="org.osgi.service.prefs.BackingStoreException.BackingStoreException-String-Throwable-">
+         <title>public  BackingStoreException(String message, Throwable cause)</title>
+         <formalpara role="parameter">
+            <title>message</title>
+            <para>The detail message.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>cause</title>
+            <para>The cause of the exception. May be {@code null}.</para>
+         </formalpara>
+         <para role="description">
+Constructs a {@code BackingStoreException} with the specified detail
+ message.
+   </para>
+         <formalpara role="parameter">
+            <title>Since</title>
+            <para>@since 1.1</para>
+         </formalpara>
+      </section>
+      <section xreflabel="getCause()"
+               role="method"
+               xml:id="org.osgi.service.prefs.BackingStoreException.getCause--">
+         <title>public Throwable getCause()</title>
+         <para role="description">
+Returns the cause of this exception or {@code null} if no cause was set.
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>The cause of this exception or {@code null} if no cause was set.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Since</title>
+            <para>@since 1.1</para>
+         </formalpara>
+      </section>
+      <section xreflabel="initCause(Throwable)"
+               role="method"
+               xml:id="org.osgi.service.prefs.BackingStoreException.initCause-Throwable-">
+         <title>public Throwable initCause(Throwable cause)</title>
+         <formalpara role="parameter">
+            <title>cause</title>
+            <para>The cause of this exception.</para>
+         </formalpara>
+         <para role="description">
+Initializes the cause of this exception to the specified value.
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>This exception.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalArgumentException</code>– If the specified cause is this
+         exception.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– If the cause of this exception has already
+         been set.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Since</title>
+            <para>@since 1.1</para>
+         </formalpara>
+      </section>
+   </section>
+   <section xreflabel="Preferences"
+            role="class"
+            xml:id="org.osgi.service.prefs.Preferences">
+      <title>public abstract Preferences</title>
+      <para>
+A node in a hierarchical collection of preference data.
+ 
+ </para>
+      <para>
+ This interface allows applications to store and retrieve user and system
+ preference data. This data is stored persistently in an
+ implementation-dependent backing store. Typical implementations include flat
+ files, OS-specific registries, directory servers and SQL databases.
+ 
+ </para>
+      <para>
+ For each bundle, there is a separate tree of nodes for each user, and one for
+ system preferences. The precise description of "user" and "system" will vary
+ from one bundle to another. Typical information stored in the user preference
+ tree might include font choice, and color choice for a bundle which interacts
+ with the user via a servlet. Typical information stored in the system
+ preference tree might include installation data, or things like high score
+ information for a game program.
+ 
+ </para>
+      <para>
+ Nodes in a preference tree are named in a similar fashion to directories in a
+ hierarchical file system. Every node in a preference tree has a <emphasis>node name
+ </emphasis> (which is not necessarily unique), a unique <emphasis>absolute path name </emphasis>,
+ and a path name <emphasis>relative </emphasis> to each ancestor including itself.
+ 
+ </para>
+      <para>
+ The root node has a node name of the empty {@code String} object (""). Every
+ other node has an arbitrary node name, specified at the time it is created.
+ The only restrictions on this name are that it cannot be the empty string,
+ and it cannot contain the slash character ('/').
+ 
+ </para>
+      <para>
+ The root node has an absolute path name of {@code "/"}. Children of the root
+ node have absolute path names of {@code "/" + } <emphasis>&lt;node name&gt; </emphasis>.
+ All other nodes have absolute path names of <emphasis>&lt;parent's absolute path
+ name&gt; </emphasis> {@code  + "/" + } <emphasis>&lt;node name&gt; </emphasis>. Note that all
+ absolute path names begin with the slash character.
+ 
+ </para>
+      <para>
+ A node <emphasis>n </emphasis>'s path name relative to its ancestor <emphasis>a </emphasis> is simply the
+ string that must be appended to <emphasis>a </emphasis>'s absolute path name in order to
+ form <emphasis>n </emphasis>'s absolute path name, with the initial slash character (if
+ present) removed. Note that:
+ </para>
+      <itemizedlist>
+         <listitem>
+            <para>No relative path names begin with the slash character.</para>
+         </listitem>
+         <listitem>
+            <para>Every node's path name relative to itself is the empty string.</para>
+         </listitem>
+         <listitem>
+            <para>Every node's path name relative to its parent is its node name (except
+ for the root node, which does not have a parent).</para>
+         </listitem>
+         <listitem>
+            <para>Every node's path name relative to the root is its absolute path name
+ with the initial slash character removed.</para>
+         </listitem>
+      </itemizedlist>
+      <para>
+ Note finally that:
+ </para>
+      <itemizedlist>
+         <listitem>
+            <para>No path name contains multiple consecutive slash characters.</para>
+         </listitem>
+         <listitem>
+            <para>No path name with the exception of the root's absolute path name end in
+ the slash character.</para>
+         </listitem>
+         <listitem>
+            <para>Any string that conforms to these two rules is a valid path name.</para>
+         </listitem>
+      </itemizedlist>
+      <para>
+ Each {@code Preference} node has zero or more properties associated with it,
+ where a property consists of a name and a value. The bundle writer is free to
+ choose any appropriate names for properties. Their values can be of type
+ {@code String},{@code long},{@code int},{@code boolean}, {@code byte[]},
+ {@code float}, or {@code double} but they can always be accessed as if they
+ were {@code String} objects.
+ 
+ </para>
+      <para>
+ All node name and property name comparisons are case-sensitive.
+ 
+ </para>
+      <para>
+ All of the methods that modify preference data are permitted to operate
+ asynchronously; they may return immediately, and changes will eventually
+ propagate to the persistent backing store, with an implementation-dependent
+ delay. The {@code flush} method may be used to synchronously force updates to
+ the backing store.
+ 
+ </para>
+      <para>
+ Implementations must automatically attempt to flush to the backing store any
+ pending updates for a bundle's preferences when the bundle is stopped or
+ otherwise ungets the Preferences Service.
+ 
+ </para>
+      <para>
+ The methods in this class may be invoked concurrently by multiple threads in
+ a single Java Virtual Machine (JVM) without the need for external
+ synchronization, and the results will be equivalent to some serial execution.
+ If this class is used concurrently <emphasis>by multiple JVMs </emphasis> that store their
+ preference data in the same backing store, the data store will not be
+ corrupted, but no other guarantees are made concerning the consistency of the
+ preference data.</para>
+      <formalpara role="parameter">
+         <title>No Implement</title>
+         <para>Consumers of this API must not implement this interface</para>
+      </formalpara>
+      <section xreflabel="absolutePath()"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.absolutePath--">
+         <title>public abstract String absolutePath()</title>
+         <para role="description">
+Returns this node's absolute path name. Note that:
+ </para>
+         <itemizedlist>
+            <listitem>
+               <para>Root node - The path name of the root node is {@code "/"}.</para>
+            </listitem>
+            <listitem>
+               <para>Slash at end - Path names other than that of the root node may not
+ end in slash ({@code '/'}).</para>
+            </listitem>
+            <listitem>
+               <para>Unusual names -{@code "."} and {@code ".."} have <emphasis>no</emphasis> special
+ significance in path names.</para>
+            </listitem>
+            <listitem>
+               <para>Illegal names - The only illegal path names are those that contain
+ multiple consecutive slashes, or that end in slash and are not the root.</para>
+            </listitem>
+         </itemizedlist>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>this node's absolute path name.</para>
+         </formalpara>
+      </section>
+      <section xreflabel="childrenNames()"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.childrenNames--">
+         <title>public abstract String[][] childrenNames() throws BackingStoreException</title>
+         <para role="description">
+Returns the names of the children of this node. (The returned array will
+ be of size zero if this node has no children and not {@code null}!)
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>the names of the children of this node.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>BackingStoreException</code>– if this operation cannot be completed due
+         to a failure in the backing store, or inability to communicate
+         with it.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+      </section>
+      <section xreflabel="clear()"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.clear--">
+         <title>public abstract void clear() throws BackingStoreException</title>
+         <para role="description">
+Removes all of the properties (key-value associations) in this node. This
+ call has no effect on any descendants of this node.
+   </para>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>BackingStoreException</code>– if this operation cannot be completed due
+         to a failure in the backing store, or inability to communicate
+         with it.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">remove(String)</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="flush()"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.flush--">
+         <title>public abstract void flush() throws BackingStoreException</title>
+         <para role="description">
+Forces any changes in the contents of this node and its descendants to
+ the persistent store.
+ 
+ </para>
+         <para>
+ Once this method returns successfully, it is safe to assume that all
+ changes made in the subtree rooted at this node prior to the method
+ invocation have become permanent.
+ 
+ </para>
+         <para>
+ Implementations are free to flush changes into the persistent store at
+ any time. They do not need to wait for this method to be called.
+ 
+ </para>
+         <para>
+ When a flush occurs on a newly created node, it is made persistent, as
+ are any ancestors (and descendants) that have yet to be made persistent.
+ Note however that any properties value changes in ancestors are <emphasis>not
+ </emphasis> guaranteed to be made persistent.</para>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>BackingStoreException</code>– if this operation cannot be completed due
+         to a failure in the backing store, or inability to communicate
+         with it.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">sync()</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="get(String,String)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.get-String-String-">
+         <title>public abstract String get(String key, String def)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>key whose associated value is to be returned.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>def</title>
+            <para>the value to be returned in the event that this node has no
+        value associated with {@code key} or the backing store is
+        inaccessible.</para>
+         </formalpara>
+         <para role="description">
+Returns the value associated with the specified {@code key} in this node.
+ Returns the specified default if there is no value associated with the
+ {@code key}, or the backing store is inaccessible.
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>the value associated with {@code key}, or {@code def} if no value
+         is associated with {@code key}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} is {@code null}. (A
+         {@code null} default <emphasis>is </emphasis> permitted.)</para>
+         </formalpara>
+      </section>
+      <section xreflabel="getBoolean(String,boolean)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.getBoolean-String-boolean-">
+         <title>public abstract boolean getBoolean(String key, boolean def)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>{@code key} whose associated value is to be returned as a
+        {@code boolean}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>def</title>
+            <para>the value to be returned in the event that this node has no
+        value associated with {@code key} or the associated value cannot
+        be interpreted as a {@code boolean} or the backing store is
+        inaccessible.</para>
+         </formalpara>
+         <para role="description">
+Returns the {@code boolean} value represented by the {@code String}
+ object associated with the specified {@code key} in this node. Valid
+ strings are "true", which represents {@code true}, and "false", which
+ represents {@code false}. Case is ignored, so, for example, "TRUE" and
+ "False" are also valid. This method is intended for use in conjunction
+ with the {@link #putBoolean(String, boolean)} method.
+ 
+ </para>
+         <para>
+ Returns the specified default if there is no value associated with the
+ {@code key}, the backing store is inaccessible, or if the associated
+ value is something other than "true" or "false", ignoring case.</para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>the {@code boolean} value represented by the {@code String}
+         object associated with {@code key} in this node, or {@code null}
+         if the associated value does not exist or cannot be interpreted
+         as a {@code boolean}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} is {@code null}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">get(String,String)</link>, <link linkend="UNRESOLVED">putBoolean(String,boolean)</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="getByteArray(String,byte[])"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.getByteArray-String-byte---">
+         <title>public abstract byte[][] getByteArray(String key, byte[][] def)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>{@code key} whose associated value is to be returned as a
+        {@code byte[]} object.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>def</title>
+            <para>the value to be returned in the event that this node has no
+        value associated with {@code key} or the associated value cannot
+        be interpreted as a {@code byte[]} type, or the backing store is
+        inaccessible.</para>
+         </formalpara>
+         <para role="description">
+Returns the {@code byte[]} value represented by the {@code String} object
+ associated with the specified {@code key} in this node. Valid
+ {@code String} objects are <emphasis>Base64 </emphasis> encoded binary data, as defined
+ in <link xmlns:xlink="http://www.w3.org/1999/xlink"
+                  xlink:href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045 </link>, Section
+ 6.8, with one minor change: the string must consist solely of characters
+ from the <emphasis>Base64 Alphabet </emphasis>; no newline characters or extraneous
+ characters are permitted. This method is intended for use in conjunction
+ with the {@link #putByteArray(String, byte[])} method.
+ 
+ </para>
+         <para>
+ Returns the specified default if there is no value associated with the
+ {@code key}, the backing store is inaccessible, or if the associated
+ value is not a valid Base64 encoded byte array (as defined above).</para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>the {@code byte[]} value represented by the {@code String} object
+         associated with {@code key} in this node, or {@code def} if the
+         associated value does not exist or cannot be interpreted as a
+         {@code byte[]}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} is {@code null}. (A
+         {@code null} value for {@code def} <emphasis>is </emphasis> permitted.)</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">get(String,String)</link>, <link linkend="UNRESOLVED">putByteArray(String,byte[])</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="getDouble(String,double)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.getDouble-String-double-">
+         <title>public abstract double getDouble(String key, double def)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>{@code key} whose associated value is to be returned as a
+        {@code double} value.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>def</title>
+            <para>the value to be returned in the event that this node has no
+        value associated with {@code key} or the associated value cannot
+        be interpreted as a {@code double} type or the backing store is
+        inaccessible.</para>
+         </formalpara>
+         <para role="description">
+Returns the {@code double} value represented by the {@code String} object
+ associated with the specified {@code key} in this node. The
+ {@code String} object is converted to a {@code double} value as by
+ {@code Double.parseDouble(String)}. Returns the specified default if
+ there is no value associated with the {@code key}, the backing store is
+ inaccessible, or if {@code Double.parseDouble(String)} would throw a
+ {@code NumberFormatException} if the associated value were passed. This
+ method is intended for use in conjunction with the {@link #putDouble}
+ method.
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>the {@code double} value represented by the {@code String} object
+         associated with {@code key} in this node, or {@code def} if the
+         associated value does not exist or cannot be interpreted as a
+         {@code double} type.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} is {@code null}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">putDouble(String,double)</link>, <link linkend="UNRESOLVED">get(String,String)</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="getFloat(String,float)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.getFloat-String-float-">
+         <title>public abstract float getFloat(String key, float def)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>{@code key} whose associated value is to be returned as a
+        {@code float} value.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>def</title>
+            <para>the value to be returned in the event that this node has no
+        value associated with {@code key} or the associated value cannot
+        be interpreted as a {@code float} type or the backing store is
+        inaccessible.</para>
+         </formalpara>
+         <para role="description">
+Returns the float {@code value} represented by the {@code String} object
+ associated with the specified {@code key} in this node. The
+ {@code String} object is converted to a {@code float} value as by
+ {@code Float.parseFloat(String)}. Returns the specified default if there
+ is no value associated with the {@code key}, the backing store is
+ inaccessible, or if {@code Float.parseFloat(String)} would throw a
+ {@code NumberFormatException} if the associated value were passed. This
+ method is intended for use in conjunction with the
+ {@link #putFloat(String, float)} method.
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>the {@code float} value represented by the string associated with
+         {@code key} in this node, or {@code def} if the associated value
+         does not exist or cannot be interpreted as a {@code float} type.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} is {@code null}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">putFloat(String,float)</link>, <link linkend="UNRESOLVED">get(String,String)</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="getInt(String,int)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.getInt-String-int-">
+         <title>public abstract int getInt(String key, int def)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>key whose associated value is to be returned as an {@code int}
+        .</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>def</title>
+            <para>the value to be returned in the event that this node has no
+        value associated with {@code key} or the associated value cannot
+        be interpreted as an {@code int} or the backing store is
+        inaccessible.</para>
+         </formalpara>
+         <para role="description">
+Returns the {@code int} value represented by the {@code String} object
+ associated with the specified {@code key} in this node. The
+ {@code String} object is converted to an {@code int} as by
+ {@code Integer.parseInt(String)}. Returns the specified default if there
+ is no value associated with the {@code key}, the backing store is
+ inaccessible, or if {@code Integer.parseInt(String)} would throw a
+ {@code NumberFormatException} if the associated {@code value} were
+ passed. This method is intended for use in conjunction with the
+ {@link #putInt(String, int)} method.
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>the {@code int} value represented by the {@code String} object
+         associated with {@code key} in this node, or {@code def} if the
+         associated value does not exist or cannot be interpreted as an
+         {@code int} type.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} is {@code null}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">putInt(String,int)</link>, <link linkend="UNRESOLVED">get(String,String)</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="getLong(String,long)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.getLong-String-long-">
+         <title>public abstract long getLong(String key, long def)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>{@code key} whose associated value is to be returned as a
+        {@code long} value.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>def</title>
+            <para>the value to be returned in the event that this node has no
+        value associated with {@code key} or the associated value cannot
+        be interpreted as a {@code long} type or the backing store is
+        inaccessible.</para>
+         </formalpara>
+         <para role="description">
+Returns the {@code long} value represented by the {@code String} object
+ associated with the specified {@code key} in this node. The
+ {@code String} object is converted to a {@code long} as by
+ {@code Long.parseLong(String)}. Returns the specified default if there is
+ no value associated with the {@code key}, the backing store is
+ inaccessible, or if {@code Long.parseLong(String)} would throw a
+ {@code NumberFormatException} if the associated {@code value} were
+ passed. This method is intended for use in conjunction with the
+ {@link #putLong(String, long)} method.
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>the {@code long} value represented by the {@code String} object
+         associated with {@code key} in this node, or {@code def} if the
+         associated value does not exist or cannot be interpreted as a
+         {@code long} type.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} is {@code null}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">putLong(String,long)</link>, <link linkend="UNRESOLVED">get(String,String)</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="keys()"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.keys--">
+         <title>public abstract String[][] keys() throws BackingStoreException</title>
+         <para role="description">
+Returns all of the keys that have an associated value in this node. (The
+ returned array will be of size zero if this node has no preferences and
+ not {@code null}!)
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>an array of the keys that have an associated value in this node.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>BackingStoreException</code>– if this operation cannot be completed due
+         to a failure in the backing store, or inability to communicate
+         with it.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+      </section>
+      <section xreflabel="name()"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.name--">
+         <title>public abstract String name()</title>
+         <para role="description">
+Returns this node's name, relative to its parent.
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>this node's name, relative to its parent.</para>
+         </formalpara>
+      </section>
+      <section xreflabel="node(String)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.node-String-">
+         <title>public abstract Preferences node(String pathName)</title>
+         <formalpara role="parameter">
+            <title>pathName</title>
+            <para>the path name of the {@code Preferences} object to
+        return.</para>
+         </formalpara>
+         <para role="description">
+Returns a named {@code Preferences} object (node), creating it and any of
+ its ancestors if they do not already exist. Accepts a relative or
+ absolute pathname. Absolute pathnames (which begin with {@code '/'}) are
+ interpreted relative to the root of this node. Relative pathnames (which
+ begin with any character other than {@code '/'}) are interpreted relative
+ to this node itself. The empty string ({@code ""}) is a valid relative
+ pathname, referring to this node itself.
+ 
+ </para>
+         <para>
+ If the returned node did not exist prior to this call, this node and any
+ ancestors that were created by this call are not guaranteed to become
+ persistent until the {@code flush} method is called on the returned node
+ (or one of its descendants).</para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>the specified {@code Preferences} object.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalArgumentException</code>– if the path name is invalid.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if path name is {@code null}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">flush()</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="nodeExists(String)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.nodeExists-String-">
+         <title>public abstract boolean nodeExists(String pathName) throws BackingStoreException</title>
+         <formalpara role="parameter">
+            <title>pathName</title>
+            <para>the path name of the node whose existence is to be
+        checked.</para>
+         </formalpara>
+         <para role="description">
+Returns true if the named node exists. Accepts a relative or absolute
+ pathname. Absolute pathnames (which begin with {@code '/'}) are
+ interpreted relative to the root of this node. Relative pathnames (which
+ begin with any character other than {@code '/'}) are interpreted relative
+ to this node itself. The pathname {@code ""} is valid, and refers to this
+ node itself.
+ 
+ </para>
+         <para>
+ If this node (or an ancestor) has already been removed with the
+ {@link #removeNode()} method, it <emphasis>is </emphasis> legal to invoke this method,
+ but only with the pathname {@code ""}; the invocation will return
+ {@code false}. Thus, the idiom {@code p.nodeExists("")} may be used to
+ test whether {@code p} has been removed.</para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>true if the specified node exists.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>BackingStoreException</code>– if this operation cannot be completed due
+         to a failure in the backing store, or inability to communicate
+         with it.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method and
+         {@code pathname} is not the empty string ({@code ""}).</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalArgumentException</code>– if the path name is invalid (i.e., it
+         contains multiple consecutive slash characters, or ends with a
+         slash character and is more than one character long).</para>
+         </formalpara>
+      </section>
+      <section xreflabel="parent()"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.parent--">
+         <title>public abstract Preferences parent()</title>
+         <para role="description">
+Returns the parent of this node, or {@code null} if this is the root.
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>the parent of this node.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+      </section>
+      <section xreflabel="put(String,String)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.put-String-String-">
+         <title>public abstract void put(String key, String value)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>key with which the specified value is to be associated.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>value</title>
+            <para>value to be associated with the specified key.</para>
+         </formalpara>
+         <para role="description">
+Associates the specified value with the specified key in this node.
+   </para>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} or {@code value} is
+         {@code null}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+      </section>
+      <section xreflabel="putBoolean(String,boolean)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.putBoolean-String-boolean-">
+         <title>public abstract void putBoolean(String key, boolean value)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>{@code key} with which the string form of value is to be
+        associated.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>value</title>
+            <para>value whose string form is to be associated with {@code key}
+        .</para>
+         </formalpara>
+         <para role="description">
+Associates a {@code String} object representing the specified
+ {@code boolean} value with the specified key in this node. The associated
+ string is "true" if the value is {@code true}, and "false" if it is
+ {@code false}. This method is intended for use in conjunction with the
+ {@link #getBoolean(String, boolean)} method.
+ 
+ </para>
+         <para>
+ Implementor's note: it is <emphasis>not </emphasis> necessary that the value be
+ represented by a string in the backing store. If the backing store
+ supports {@code boolean} values, it is not unreasonable to use them. This
+ implementation detail is not visible through the {@code Preferences
+ } API, which
+ allows the value to be read as a {@code boolean} (with {@code getBoolean}
+ ) or a {@code String} (with {@code get}) type.</para>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} is {@code null}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">getBoolean(String,boolean)</link>, <link linkend="UNRESOLVED">get(String,String)</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="putByteArray(String,byte[])"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.putByteArray-String-byte---">
+         <title>public abstract void putByteArray(String key, byte[][] value)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>{@code key} with which the string form of {@code value} is to
+        be associated.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>value</title>
+            <para>{@code value} whose string form is to be associated with
+        {@code key}.</para>
+         </formalpara>
+         <para role="description">
+Associates a {@code String} object representing the specified
+ {@code byte[]} with the specified {@code key} in this node. The
+ associated {@code String} object the <emphasis>Base64 </emphasis> encoding of the
+ {@code byte[]}, as defined in <link xmlns:xlink="http://www.w3.org/1999/xlink"
+                  xlink:href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045 </link>, Section 6.8,
+ with one minor change: the string will consist solely of characters from
+ the <emphasis>Base64 Alphabet </emphasis>; it will not contain any newline characters.
+ This method is intended for use in conjunction with the
+ {@link #getByteArray(String, byte[])} method.
+ 
+ </para>
+         <para>
+ Implementor's note: it is <emphasis>not </emphasis> necessary that the value be
+ represented by a {@code String} type in the backing store. If the backing
+ store supports {@code byte[]} values, it is not unreasonable to use them.
+ This implementation detail is not visible through the {@code  Preferences}
+ API, which allows the value to be read as an a {@code byte[]} object
+ (with {@code getByteArray}) or a {@code String} object (with {@code get}
+ ).</para>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} or {@code value} is
+         {@code null}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">getByteArray(String,byte[])</link>, <link linkend="UNRESOLVED">get(String,String)</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="putDouble(String,double)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.putDouble-String-double-">
+         <title>public abstract void putDouble(String key, double value)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>{@code key} with which the string form of value is to be
+        associated.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>value</title>
+            <para>value whose string form is to be associated with {@code key}
+        .</para>
+         </formalpara>
+         <para role="description">
+Associates a {@code String} object representing the specified
+ {@code double} value with the specified {@code key} in this node. The
+ associated {@code String} object is the one that would be returned if the
+ {@code double} value were passed to {@code Double.toString(double)}. This
+ method is intended for use in conjunction with the
+ {@link #getDouble(String, double)} method
+ 
+ </para>
+         <para>
+ Implementor's note: it is <emphasis>not </emphasis> necessary that the value be
+ represented by a string in the backing store. If the backing store
+ supports {@code double} values, it is not unreasonable to use them. This
+ implementation detail is not visible through the {@code Preferences
+ } API, which
+ allows the value to be read as a {@code double} (with {@code getDouble})
+ or a {@code String} (with {@code get}) type.</para>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} is {@code null}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">getDouble(String,double)</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="putFloat(String,float)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.putFloat-String-float-">
+         <title>public abstract void putFloat(String key, float value)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>{@code key} with which the string form of value is to be
+        associated.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>value</title>
+            <para>value whose string form is to be associated with {@code key}
+        .</para>
+         </formalpara>
+         <para role="description">
+Associates a {@code String} object representing the specified
+ {@code float} value with the specified {@code key} in this node. The
+ associated {@code String} object is the one that would be returned if the
+ {@code float} value were passed to {@code Float.toString(float)}. This
+ method is intended for use in conjunction with the
+ {@link #getFloat(String, float)} method.
+ 
+ </para>
+         <para>
+ Implementor's note: it is <emphasis>not </emphasis> necessary that the value be
+ represented by a string in the backing store. If the backing store
+ supports {@code float} values, it is not unreasonable to use them. This
+ implementation detail is not visible through the {@code Preferences
+ } API, which
+ allows the value to be read as a {@code float} (with {@code getFloat}) or
+ a {@code String} (with {@code get}) type.</para>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} is {@code null}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">getFloat(String,float)</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="putInt(String,int)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.putInt-String-int-">
+         <title>public abstract void putInt(String key, int value)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>key with which the string form of value is to be associated.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>value</title>
+            <para>{@code value} whose string form is to be associated with
+        {@code key}.</para>
+         </formalpara>
+         <para role="description">
+Associates a {@code String} object representing the specified {@code int}
+ value with the specified {@code key} in this node. The associated string
+ is the one that would be returned if the {@code int} value were passed to
+ {@code Integer.toString(int)}. This method is intended for use in
+ conjunction with {@link #getInt(String, int)} method.
+ 
+ </para>
+         <para>
+ Implementor's note: it is <emphasis>not </emphasis> necessary that the property value
+ be represented by a {@code String} object in the backing store. If the
+ backing store supports integer values, it is not unreasonable to use
+ them. This implementation detail is not visible through the
+ {@code Preferences} API, which allows the value to be read as an
+ {@code int} (with {@code getInt} or a {@code String} (with {@code get})
+ type.</para>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} is {@code null}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">getInt(String,int)</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="putLong(String,long)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.putLong-String-long-">
+         <title>public abstract void putLong(String key, long value)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>{@code key} with which the string form of {@code value} is to
+        be associated.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>value</title>
+            <para>{@code value} whose string form is to be associated with
+        {@code key}.</para>
+         </formalpara>
+         <para role="description">
+Associates a {@code String} object representing the specified
+ {@code long} value with the specified {@code key} in this node. The
+ associated {@code String} object is the one that would be returned if the
+ {@code long} value were passed to {@code Long.toString(long)}. This
+ method is intended for use in conjunction with the
+ {@link #getLong(String, long)} method.
+ 
+ </para>
+         <para>
+ Implementor's note: it is <emphasis>not </emphasis> necessary that the {@code value} be
+ represented by a {@code String} type in the backing store. If the backing
+ store supports {@code long} values, it is not unreasonable to use them.
+ This implementation detail is not visible through the {@code  Preferences}
+ API, which allows the value to be read as a {@code long} (with
+ {@code getLong} or a {@code String} (with {@code get}) type.</para>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>NullPointerException</code>– if {@code key} is {@code null}.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">getLong(String,long)</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="remove(String)"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.remove-String-">
+         <title>public abstract void remove(String key)</title>
+         <formalpara role="parameter">
+            <title>key</title>
+            <para>key whose mapping is to be removed from this node.</para>
+         </formalpara>
+         <para role="description">
+Removes the value associated with the specified {@code key} in this node,
+ if any.
+   </para>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">get(String,String)</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="removeNode()"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.removeNode--">
+         <title>public abstract void removeNode() throws BackingStoreException</title>
+         <para role="description">
+Removes this node and all of its descendants, invalidating any properties
+ contained in the removed nodes. Once a node has been removed, attempting
+ any method other than {@code name()},{@code absolutePath()} or
+ {@code nodeExists("")} on the corresponding {@code Preferences} instance
+ will fail with an {@code IllegalStateException}. (The methods defined on
+ {@code Object} can still be invoked on a node after it has been removed;
+ they will not throw {@code IllegalStateException}.)
+ 
+ </para>
+         <para>
+ The removal is not guaranteed to be persistent until the {@code flush}
+ method is called on the parent of this node.</para>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has already
+         been removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>BackingStoreException</code>– if this operation cannot be completed due
+         to a failure in the backing store, or inability to communicate
+         with it.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">flush()</link>
+            </para>
+         </formalpara>
+      </section>
+      <section xreflabel="sync()"
+               role="method"
+               xml:id="org.osgi.service.prefs.Preferences.sync--">
+         <title>public abstract void sync() throws BackingStoreException</title>
+         <para role="description">
+Ensures that future reads from this node and its descendants reflect any
+ changes that were committed to the persistent store (from any VM) prior
+ to the {@code sync} invocation. As a side-effect, forces any changes in
+ the contents of this node and its descendants to the persistent store, as
+ if the {@code flush} method had been invoked on this node.
+   </para>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>BackingStoreException</code>– if this operation cannot be completed due
+         to a failure in the backing store, or inability to communicate
+         with it.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>Throws</title>
+            <para>
+               <code>IllegalStateException</code>– if this node (or an ancestor) has been
+         removed with the {@link #removeNode()} method.</para>
+         </formalpara>
+         <formalpara role="parameter">
+            <title>See Also</title>
+            <para>
+               <link linkend="UNRESOLVED">flush()</link>
+            </para>
+         </formalpara>
+      </section>
+   </section>
+   <section xreflabel="PreferencesService"
+            role="class"
+            xml:id="org.osgi.service.prefs.PreferencesService">
+      <title>public abstract PreferencesService</title>
+      <para>
+The Preferences Service.
+ 
+ </para>
+      <para>
+ Each bundle using this service has its own set of preference trees: one for
+ system preferences, and one for each user.
+ 
+ </para>
+      <para>
+ A {@code PreferencesService} object is specific to the bundle which obtained
+ it from the service registry. If a bundle wishes to allow another bundle to
+ access its preferences, it should pass its {@code PreferencesService} object
+ to that bundle.</para>
+      <formalpara role="parameter">
+         <title>No Implement</title>
+         <para>Consumers of this API must not implement this interface</para>
+      </formalpara>
+      <section xreflabel="getSystemPreferences()"
+               role="method"
+               xml:id="org.osgi.service.prefs.PreferencesService.getSystemPreferences--">
+         <title>public abstract Preferences getSystemPreferences()</title>
+         <para role="description">
+Returns the root system node for the calling bundle.
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>The root system node for the calling bundle.</para>
+         </formalpara>
+      </section>
+      <section xreflabel="getUserPreferences(String)"
+               role="method"
+               xml:id="org.osgi.service.prefs.PreferencesService.getUserPreferences-String-">
+         <title>public abstract Preferences getUserPreferences(String name)</title>
+         <formalpara role="parameter">
+            <title>name</title>
+            <para>The user for which to return the preference root node.</para>
+         </formalpara>
+         <para role="description">
+Returns the root node for the specified user and the calling bundle.
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>The root node for the specified user and the calling bundle.</para>
+         </formalpara>
+      </section>
+      <section xreflabel="getUsers()"
+               role="method"
+               xml:id="org.osgi.service.prefs.PreferencesService.getUsers--">
+         <title>public abstract String[][] getUsers()</title>
+         <para role="description">
+Returns the names of users for which node trees exist.
+   </para>
+         <formalpara role="parameter">
+            <title>Returns</title>
+            <para>The names of users for which node trees exist.</para>
+         </formalpara>
+      </section>
+   </section>
+</section>

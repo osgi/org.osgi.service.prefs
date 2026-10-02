@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"org.osgi.impl.service.prefs","l":"AbstractPreferences"},{"p":"org.osgi.impl.service.prefs","l":"Activator"},{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"org.osgi.impl.service.prefs","l":"InvalidPreferencesFormatException"},{"p":"org.osgi.impl.service.prefs","l":"PreferencesServiceImpl"}];updateSearchResults();
