@@ -21,52 +21,65 @@
 
 package org.osgi.test.cases.prefs.junit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.within;
+
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 import org.osgi.service.prefs.PreferencesService;
-import org.osgi.test.support.compatibility.DefaultTestBundleControl;
 
 /**
  * This is the bundle initially installed and started by the TestCase when
  * started. It performs the various tests and reports back to the TestCase.
  */
-public class PrefsControl extends DefaultTestBundleControl {
+public class PrefsControl extends PrefsTestSupport {
 	private PreferencesService	prefs;
 
-	protected void setUp() {
+	@BeforeEach
+	public void setUp() {
 		prefs = getService(PreferencesService.class);
-		assertNotNull(prefs);
+		assertThat(prefs).isNotNull();
 	}
 
-	protected void tearDown() {
+	@AfterEach
+	public void tearDown() {
 		ungetService(prefs);
 	}
 
+	@Test
 	public void testSystemRoot() {
 		Preferences theNode = prefs.getSystemPreferences();
 		runAllTests(theNode, "/");
 	}
 
+	@Test
 	public void testSystemNode() {
 		Preferences theNode = prefs.getSystemPreferences().node(
 				"somenode/anothernode");
 		runAllTests(theNode, "/somenode/anothernode");
 	}
 
+	@Test
 	public void testUserRoot() {
 		Preferences theNode = prefs.getUserPreferences("theuser");
 		runAllTests(theNode, "/");
 	}
 
+	@Test
 	public void testUserNode() {
 		Preferences theNode = prefs.getUserPreferences("theuser").node(
 				"somenode/anothernode");
 		runAllTests(theNode, "/somenode/anothernode");
 	}
 
+	@Test
 	public void testRemovedNode() {
 		Preferences theNode = prefs.getUserPreferences("theuser").node(
 				"removednode");
@@ -74,6 +87,7 @@ public class PrefsControl extends DefaultTestBundleControl {
 		runRemovedTests(theNode, "/removednode");
 	}
 
+	@Test
 	public void testRemovedAncestor() {
 		Preferences theNode = prefs.getUserPreferences("theuser").node(
 				"removedancestor/child/baby");
@@ -140,7 +154,7 @@ public class PrefsControl extends DefaultTestBundleControl {
 
 			/* Test paths, names and if node exists */
 			testAbsolutePath(theNode, absPath);
-			assertFalse(theNode.nodeExists(""));
+			assertThat(theNode.nodeExists("")).isFalse();
 			testName(theNode, absPath);
 
 			/* Test get and put methods */
@@ -204,7 +218,7 @@ public class PrefsControl extends DefaultTestBundleControl {
 	/* These methods sets the requirement markers and performs tests */
 
 	private void testAbsolutePath(Preferences theNode, String absPath) {
-		assertEquals(absPath, theNode.absolutePath());
+		assertThat(theNode.absolutePath()).isEqualTo(absPath);
 	}
 
 	private void testChildren(Preferences theNode) {
@@ -217,7 +231,7 @@ public class PrefsControl extends DefaultTestBundleControl {
 		testNodeExists(theNode, "child2");
 		testNodeExists(theNode, "child3");
 		try {
-			assertEquals(3, theNode.childrenNames().length);
+			assertThat(theNode.childrenNames()).hasSize(3);
 		}
 		catch (Exception e) {
 			fail("children", e);
@@ -227,17 +241,16 @@ public class PrefsControl extends DefaultTestBundleControl {
 
 	private void testGetMethods(Preferences theNode) {
 		clearKeys(theNode);
-		assertEquals("(empty)", theNode.get("stringkey", "(empty)"));
-		assertFalse(theNode.getBoolean("booleankey", false));
-		assertEquals(0,
-				theNode.getByteArray("bytearraykey", new byte[] {}).length);
-		assertEquals(0.0d, theNode.getDouble("doublekey", 0.0d), 0.0d);
-		assertEquals(0.0f, theNode.getFloat("floatkey", 0.0f), 0.0f);
-		assertEquals(0, theNode.getInt("integerkey", 0));
-		assertEquals(0l, theNode.getLong("longkey", 0l));
+		assertThat(theNode.get("stringkey", "(empty)")).isEqualTo("(empty)");
+		assertThat(theNode.getBoolean("booleankey", false)).isFalse();
+		assertThat(theNode.getByteArray("bytearraykey", new byte[]{})).isEmpty();
+		assertThat(theNode.getDouble("doublekey", 0.0d)).isCloseTo(0.0d, within(0.0d));
+		assertThat(theNode.getFloat("floatkey", 0.0f)).isCloseTo(0.0f, within(0.0f));
+		assertThat(theNode.getInt("integerkey", 0)).isZero();
+		assertThat(theNode.getLong("longkey", 0l)).isZero();
 
-		assertNull(theNode.get("stringkey", null));
-		assertNull(theNode.getByteArray("bytearraykey", null));
+		assertThat(theNode.get("stringkey", null)).isNull();
+		assertThat(theNode.getByteArray("bytearraykey", null)).isNull();
 
 		try {
 			try {
@@ -305,13 +318,13 @@ public class PrefsControl extends DefaultTestBundleControl {
 		theNode.putInt("integerkey", 0);
 		theNode.putLong("longkey", 0l);
 
-		assertEquals("(empty)", theNode.get("stringkey", null));
-		assertFalse(theNode.getBoolean("booleankey", true));
-		assertEquals(0, theNode.getByteArray("bytearraykey", null).length);
-		assertEquals(0.0d, theNode.getDouble("doublekey", 1.0d), 0.0d);
-		assertEquals(0.0f, theNode.getFloat("floatkey", 1.0f), 0.0f);
-		assertEquals(0, theNode.getInt("integerkey", 1));
-		assertEquals(0l, theNode.getLong("longkey", 1l));
+		assertThat(theNode.get("stringkey", null)).isEqualTo("(empty)");
+		assertThat(theNode.getBoolean("booleankey", true)).isFalse();
+		assertThat(theNode.getByteArray("bytearraykey", null)).isEmpty();
+		assertThat(theNode.getDouble("doublekey", 1.0d)).isCloseTo(0.0d, within(0.0d));
+		assertThat(theNode.getFloat("floatkey", 1.0f)).isCloseTo(0.0f, within(0.0f));
+		assertThat(theNode.getInt("integerkey", 1)).isZero();
+		assertThat(theNode.getLong("longkey", 1l)).isZero();
 
 		try {
 			try {
@@ -495,23 +508,23 @@ public class PrefsControl extends DefaultTestBundleControl {
 			theNode.put("someotherkey", "someothervalue");
 
 			List<String> keys = Arrays.asList(theNode.keys());
-			assertEquals(2, keys.size());
-			assertTrue(keys.contains("somekey"));
-			assertTrue(keys.contains("someotherkey"));
+			assertThat(keys.size()).isEqualTo(2);
+			assertThat(keys.contains("somekey")).isTrue();
+			assertThat(keys.contains("someotherkey")).isTrue();
 
 			testRemove(theNode, "somekey");
 
 			keys = Arrays.asList(theNode.keys());
-			assertEquals(1, keys.size());
-			assertFalse(keys.contains("somekey"));
-			assertTrue(keys.contains("someotherkey"));
+			assertThat(keys.size()).isEqualTo(1);
+			assertThat(keys.contains("somekey")).isFalse();
+			assertThat(keys.contains("someotherkey")).isTrue();
 
 			clearKeys(theNode);
 
 			keys = Arrays.asList(theNode.keys());
-			assertEquals(0, keys.size());
-			assertFalse(keys.contains("somekey"));
-			assertFalse(keys.contains("someotherkey"));
+			assertThat(keys.size()).isEqualTo(0);
+			assertThat(keys.contains("somekey")).isFalse();
+			assertThat(keys.contains("someotherkey")).isFalse();
 		}
 		catch (Exception e) {
 			fail("keys error", e);
@@ -519,7 +532,7 @@ public class PrefsControl extends DefaultTestBundleControl {
 	}
 
 	private void testName(Preferences theNode, String absPath) {
-		assertEquals(getNodeName(absPath), theNode.name());
+		assertThat(theNode.name()).isEqualTo(getNodeName(absPath));
 	}
 
 	private static String getNodeName(String absPath) {
@@ -540,8 +553,7 @@ public class PrefsControl extends DefaultTestBundleControl {
 	private void createNode(Preferences theNode, String pathName) {
 		try {
 			Preferences theNewNode = theNode.node(pathName);
-			assertEquals(getAbsPathName(theNode.absolutePath(), pathName),
-					theNewNode.absolutePath());
+			assertThat(theNewNode.absolutePath()).isEqualTo(getAbsPathName(theNode.absolutePath(), pathName));
 		}
 		catch (Exception e) {
 			fail("create node", e);
@@ -551,7 +563,7 @@ public class PrefsControl extends DefaultTestBundleControl {
 	private void testNodeExists(Preferences theNode, String pathName) {
 		/* Test the relative path */
 		try {
-			assertTrue(theNode.nodeExists(pathName));
+			assertThat(theNode.nodeExists(pathName)).isTrue();
 
 			/* Test the absolute path */
 			String absolutePath = theNode.absolutePath();
@@ -560,7 +572,7 @@ public class PrefsControl extends DefaultTestBundleControl {
 					absolutePath = absolutePath + "/" + pathName;
 				}
 			}
-			assertTrue(theNode.nodeExists(absolutePath));
+			assertThat(theNode.nodeExists(absolutePath)).isTrue();
 		}
 		catch (Exception e) {
 			fail("node exists", e);
@@ -576,10 +588,10 @@ public class PrefsControl extends DefaultTestBundleControl {
 			}
 			Preferences parentNode = theNode.parent();
 			if (parentNode != null) {
-				assertEquals(parentName, parentNode.absolutePath());
+				assertThat(parentNode.absolutePath()).isEqualTo(parentName);
 			}
 			else {
-				assertEquals(0, parentName.length());
+				assertThat(parentName).isEmpty();
 			}
 		}
 		catch (Exception e) {
@@ -590,7 +602,7 @@ public class PrefsControl extends DefaultTestBundleControl {
 	private void testRemove(Preferences theNode, String key) {
 		try {
 			theNode.remove(key);
-			assertFalse(Arrays.asList(theNode.keys()).contains(key));
+			assertThat(Arrays.asList(theNode.keys()).contains(key)).isFalse();
 		}
 		catch (Exception e) {
 			fail("remove key", e);
@@ -600,7 +612,7 @@ public class PrefsControl extends DefaultTestBundleControl {
 	private void testRemoveNode(Preferences theNode) {
 		try {
 			theNode.removeNode();
-			assertFalse(theNode.nodeExists(""));
+			assertThat(theNode.nodeExists("")).isFalse();
 		}
 		catch (Exception e) {
 			fail("remove node", e);
@@ -614,120 +626,120 @@ public class PrefsControl extends DefaultTestBundleControl {
 				(byte) 0x9e};
 		final byte[] sometextResult = new byte[] {(byte) 0xb2, (byte) 0x89,
 				(byte) 0x9e, (byte) 0xb5, (byte) 0xec, (byte) 0x6d};
-		assertEquals("(empty)", theNode.get("thekey", "(empty)"));
-		assertFalse(theNode.getBoolean("thekey", false));
-		assertTrue(Arrays.equals(empty, theNode.getByteArray("thekey", empty)));
-		assertEquals(0.0d, theNode.getDouble("thekey", 0.0d), 0.0d);
-		assertEquals(0.0f, theNode.getFloat("thekey", 0.0f), 0.0f);
-		assertEquals(0, theNode.getInt("thekey", 0));
-		assertEquals(0l, theNode.getLong("thekey", 0l));
+		assertThat(theNode.get("thekey", "(empty)")).isEqualTo("(empty)");
+		assertThat(theNode.getBoolean("thekey", false)).isFalse();
+		assertThat(Arrays.equals(empty, theNode.getByteArray("thekey", empty))).isTrue();
+		assertThat(theNode.getDouble("thekey", 0.0d)).isCloseTo(0.0d, within(0.0d));
+		assertThat(theNode.getFloat("thekey", 0.0f)).isCloseTo(0.0f, within(0.0f));
+		assertThat(theNode.getInt("thekey", 0)).isZero();
+		assertThat(theNode.getLong("thekey", 0l)).isZero();
 
 		/* Test putting in a string */
 		theNode.put("thekey", "astring");
-		assertEquals("astring", theNode.get("thekey", "(empty)"));
-		assertFalse(theNode.getBoolean("thekey", false));
-		assertTrue(Arrays.equals(empty, theNode.getByteArray("thekey", empty)));
-		assertEquals(0.0d, theNode.getDouble("thekey", 0.0d), 0.0d);
-		assertEquals(0.0f, theNode.getFloat("thekey", 0.0f), 0.0f);
-		assertEquals(0, theNode.getInt("thekey", 0));
-		assertEquals(0l, theNode.getLong("thekey", 0l));
+		assertThat(theNode.get("thekey", "(empty)")).isEqualTo("astring");
+		assertThat(theNode.getBoolean("thekey", false)).isFalse();
+		assertThat(Arrays.equals(empty, theNode.getByteArray("thekey", empty))).isTrue();
+		assertThat(theNode.getDouble("thekey", 0.0d)).isCloseTo(0.0d, within(0.0d));
+		assertThat(theNode.getFloat("thekey", 0.0f)).isCloseTo(0.0f, within(0.0f));
+		assertThat(theNode.getInt("thekey", 0)).isZero();
+		assertThat(theNode.getLong("thekey", 0l)).isZero();
 
 		/* Test putting in a boolean string */
 		theNode.put("thekey", "true");
-		assertEquals("true", theNode.get("thekey", "(empty)"));
-		assertTrue(theNode.getBoolean("thekey", false));
-		assertTrue(Arrays.equals(trueResult, theNode.getByteArray("thekey",
-				empty)));
-		assertEquals(0.0d, theNode.getDouble("thekey", 0.0d), 0.0d);
-		assertEquals(0.0f, theNode.getFloat("thekey", 0.0f), 0.0f);
-		assertEquals(0, theNode.getInt("thekey", 0));
-		assertEquals(0l, theNode.getLong("thekey", 0l));
+		assertThat(theNode.get("thekey", "(empty)")).isEqualTo("true");
+		assertThat(theNode.getBoolean("thekey", false)).isTrue();
+		assertThat(Arrays.equals(trueResult, theNode.getByteArray("thekey",
+				empty))).isTrue();
+		assertThat(theNode.getDouble("thekey", 0.0d)).isCloseTo(0.0d, within(0.0d));
+		assertThat(theNode.getFloat("thekey", 0.0f)).isCloseTo(0.0f, within(0.0f));
+		assertThat(theNode.getInt("thekey", 0)).isZero();
+		assertThat(theNode.getLong("thekey", 0l)).isZero();
 
 		/* Test putting in a boolean */
 		theNode.putBoolean("thekey", true);
-		assertEquals("true", theNode.get("thekey", "(empty)"));
-		assertTrue(theNode.getBoolean("thekey", false));
-		assertTrue(Arrays.equals(trueResult, theNode.getByteArray("thekey",
-				empty)));
-		assertEquals(0.0d, theNode.getDouble("thekey", 0.0d), 0.0d);
-		assertEquals(0.0f, theNode.getFloat("thekey", 0.0f), 0.0f);
-		assertEquals(0, theNode.getInt("thekey", 0));
-		assertEquals(0l, theNode.getLong("thekey", 0l));
+		assertThat(theNode.get("thekey", "(empty)")).isEqualTo("true");
+		assertThat(theNode.getBoolean("thekey", false)).isTrue();
+		assertThat(Arrays.equals(trueResult, theNode.getByteArray("thekey",
+				empty))).isTrue();
+		assertThat(theNode.getDouble("thekey", 0.0d)).isCloseTo(0.0d, within(0.0d));
+		assertThat(theNode.getFloat("thekey", 0.0f)).isCloseTo(0.0f, within(0.0f));
+		assertThat(theNode.getInt("thekey", 0)).isZero();
+		assertThat(theNode.getLong("thekey", 0l)).isZero();
 
 		/* Test putting in a string that works as a byte array too */
 		theNode.put("thekey", "sometext");
-		assertEquals("sometext", theNode.get("thekey", "(empty)"));
-		assertFalse(theNode.getBoolean("thekey", false));
-		assertTrue(Arrays.equals(sometextResult, theNode.getByteArray("thekey",
-				empty)));
-		assertEquals(0.0d, theNode.getDouble("thekey", 0.0d), 0.0d);
-		assertEquals(0.0f, theNode.getFloat("thekey", 0.0f), 0.0f);
-		assertEquals(0, theNode.getInt("thekey", 0));
-		assertEquals(0l, theNode.getLong("thekey", 0l));
+		assertThat(theNode.get("thekey", "(empty)")).isEqualTo("sometext");
+		assertThat(theNode.getBoolean("thekey", false)).isFalse();
+		assertThat(Arrays.equals(sometextResult, theNode.getByteArray("thekey",
+				empty))).isTrue();
+		assertThat(theNode.getDouble("thekey", 0.0d)).isCloseTo(0.0d, within(0.0d));
+		assertThat(theNode.getFloat("thekey", 0.0f)).isCloseTo(0.0f, within(0.0f));
+		assertThat(theNode.getInt("thekey", 0)).isZero();
+		assertThat(theNode.getLong("thekey", 0l)).isZero();
 
 		/* Test putting in a double/float string */
 		theNode.put("thekey", "1.0");
-		assertEquals("1.0", theNode.get("thekey", "(empty)"));
-		assertFalse(theNode.getBoolean("thekey", false));
-		assertTrue(Arrays.equals(empty, theNode.getByteArray("thekey", empty)));
-		assertEquals(1.0d, theNode.getDouble("thekey", 0.0d), 0.0d);
-		assertEquals(1.0f, theNode.getFloat("thekey", 0.0f), 0.0f);
-		assertEquals(0, theNode.getInt("thekey", 0));
-		assertEquals(0l, theNode.getLong("thekey", 0l));
+		assertThat(theNode.get("thekey", "(empty)")).isEqualTo("1.0");
+		assertThat(theNode.getBoolean("thekey", false)).isFalse();
+		assertThat(Arrays.equals(empty, theNode.getByteArray("thekey", empty))).isTrue();
+		assertThat(theNode.getDouble("thekey", 0.0d)).isCloseTo(1.0d, within(0.0d));
+		assertThat(theNode.getFloat("thekey", 0.0f)).isCloseTo(1.0f, within(0.0f));
+		assertThat(theNode.getInt("thekey", 0)).isZero();
+		assertThat(theNode.getLong("thekey", 0l)).isZero();
 
 		/* Test putting in the Double.MIN_VALUE */
 		theNode.putDouble("thekey", Double.MIN_VALUE);
-		assertEquals(Double.toString(Double.MIN_VALUE), theNode.get("thekey",
-				"(empty)"));
-		assertFalse(theNode.getBoolean("thekey", false));
-		assertTrue(Arrays.equals(empty, theNode.getByteArray("thekey", empty)));
-		assertEquals(Double.MIN_VALUE, theNode.getDouble("thekey", 0.0d), 0.0d);
-		assertEquals(0.0f, theNode.getFloat("thekey", 0.0f), 0.0f);
-		assertEquals(0, theNode.getInt("thekey", 0));
-		assertEquals(0l, theNode.getLong("thekey", 0l));
+		assertThat(theNode.get("thekey",
+				"(empty)")).isEqualTo(Double.toString(Double.MIN_VALUE));
+		assertThat(theNode.getBoolean("thekey", false)).isFalse();
+		assertThat(Arrays.equals(empty, theNode.getByteArray("thekey", empty))).isTrue();
+		assertThat(theNode.getDouble("thekey", 0.0d)).isCloseTo(Double.MIN_VALUE, within(0.0d));
+		assertThat(theNode.getFloat("thekey", 0.0f)).isCloseTo(0.0f, within(0.0f));
+		assertThat(theNode.getInt("thekey", 0)).isZero();
+		assertThat(theNode.getLong("thekey", 0l)).isZero();
 
 		/* Test putting in the Float.MIN_VALUE */
 		theNode.putFloat("thekey", Float.MIN_VALUE);
-		assertEquals(Float.toString(Float.MIN_VALUE), theNode.get("thekey",
-				"(empty)"));
-		assertFalse(theNode.getBoolean("thekey", false));
-		assertTrue(Arrays.equals(empty, theNode.getByteArray("thekey", empty)));
-		assertEquals(Float.MIN_VALUE, theNode.getDouble("thekey", 0.0d), 0.002d);
-		assertEquals(Float.MIN_VALUE, theNode.getFloat("thekey", 0.0f), 0.0f);
-		assertEquals(0, theNode.getInt("thekey", 0));
-		assertEquals(0l, theNode.getLong("thekey", 0l));
+		assertThat(theNode.get("thekey",
+				"(empty)")).isEqualTo(Float.toString(Float.MIN_VALUE));
+		assertThat(theNode.getBoolean("thekey", false)).isFalse();
+		assertThat(Arrays.equals(empty, theNode.getByteArray("thekey", empty))).isTrue();
+		assertThat(theNode.getDouble("thekey", 0.0d)).isCloseTo(Float.MIN_VALUE, within(0.002d));
+		assertThat(theNode.getFloat("thekey", 0.0f)).isCloseTo(Float.MIN_VALUE, within(0.0f));
+		assertThat(theNode.getInt("thekey", 0)).isZero();
+		assertThat(theNode.getLong("thekey", 0l)).isZero();
 
 		/* Test putting in an Integer/Long string */
 		theNode.put("thekey", "1");
-		assertEquals("1", theNode.get("thekey", "(empty)"));
-		assertFalse(theNode.getBoolean("thekey", false));
-		assertTrue(Arrays.equals(empty, theNode.getByteArray("thekey", empty)));
-		assertEquals(1.0d, theNode.getDouble("thekey", 0.0d), 0.0d);
-		assertEquals(1.0f, theNode.getFloat("thekey", 0.0f), 0.0f);
-		assertEquals(1, theNode.getInt("thekey", 0));
-		assertEquals(1l, theNode.getLong("thekey", 0l));
+		assertThat(theNode.get("thekey", "(empty)")).isEqualTo("1");
+		assertThat(theNode.getBoolean("thekey", false)).isFalse();
+		assertThat(Arrays.equals(empty, theNode.getByteArray("thekey", empty))).isTrue();
+		assertThat(theNode.getDouble("thekey", 0.0d)).isCloseTo(1.0d, within(0.0d));
+		assertThat(theNode.getFloat("thekey", 0.0f)).isCloseTo(1.0f, within(0.0f));
+		assertThat(theNode.getInt("thekey", 0)).isOne();
+		assertThat(theNode.getLong("thekey", 0l)).isOne();
 
 		/* Test putting in the Integer.MIN_VALUE Integer */
 		theNode.putInt("thekey", Integer.MIN_VALUE);
-		assertEquals(Integer.toString(Integer.MIN_VALUE), theNode.get("thekey",
-				"(empty)"));
-		assertFalse(theNode.getBoolean("thekey", false));
-		assertTrue(Arrays.equals(empty, theNode.getByteArray("thekey", empty)));
-		assertEquals(Integer.MIN_VALUE, theNode.getDouble("thekey", 0.0d), 0.0d);
-		assertEquals(Integer.MIN_VALUE, theNode.getFloat("thekey", 0.0f), 0.0f);
-		assertEquals(Integer.MIN_VALUE, theNode.getInt("thekey", 0));
-		assertEquals(Integer.MIN_VALUE, theNode.getLong("thekey", 0l));
+		assertThat(theNode.get("thekey",
+				"(empty)")).isEqualTo(Integer.toString(Integer.MIN_VALUE));
+		assertThat(theNode.getBoolean("thekey", false)).isFalse();
+		assertThat(Arrays.equals(empty, theNode.getByteArray("thekey", empty))).isTrue();
+		assertThat(theNode.getDouble("thekey", 0.0d)).isCloseTo(Integer.MIN_VALUE, within(0.0d));
+		assertThat(theNode.getFloat("thekey", 0.0f)).isCloseTo(Integer.MIN_VALUE, within(0.0f));
+		assertThat(theNode.getInt("thekey", 0)).isEqualTo(Integer.MIN_VALUE);
+		assertThat(theNode.getLong("thekey", 0l)).isEqualTo(Integer.MIN_VALUE);
 
 		/* Test putting in the Long.MIN_VALUE */
 		theNode.putLong("thekey", Long.MIN_VALUE);
-		assertEquals(Long.toString(Long.MIN_VALUE), theNode.get("thekey",
-				"(empty)"));
-		assertFalse(theNode.getBoolean("thekey", false));
-		assertTrue(Arrays.equals(empty, theNode.getByteArray("thekey", empty)));
-		assertEquals(Long.MIN_VALUE, theNode.getDouble("thekey", 0.0d), 0.0d);
-		assertEquals(Long.MIN_VALUE, theNode.getFloat("thekey", 0.0f), 0.0f);
-		assertEquals(0, theNode.getInt("thekey", 0));
-		assertEquals(Long.MIN_VALUE, theNode.getLong("thekey", 0l));
+		assertThat(theNode.get("thekey",
+				"(empty)")).isEqualTo(Long.toString(Long.MIN_VALUE));
+		assertThat(theNode.getBoolean("thekey", false)).isFalse();
+		assertThat(Arrays.equals(empty, theNode.getByteArray("thekey", empty))).isTrue();
+		assertThat(theNode.getDouble("thekey", 0.0d)).isCloseTo(Long.MIN_VALUE, within(0.0d));
+		assertThat(theNode.getFloat("thekey", 0.0f)).isCloseTo(Long.MIN_VALUE, within(0.0f));
+		assertThat(theNode.getInt("thekey", 0)).isZero();
+		assertThat(theNode.getLong("thekey", 0l)).isEqualTo(Long.MIN_VALUE);
 	}
 
 	private void testIllegalNames(Preferences theNode) {
@@ -757,8 +769,8 @@ public class PrefsControl extends DefaultTestBundleControl {
 			String namePath = getAbsPathName(absPath, name);
 			try {
 				Preferences newNode = theNode.node(name);
-				assertNotNull(newNode);
-				assertEquals(namePath, newNode.absolutePath());
+				assertThat(newNode).isNotNull();
+				assertThat(newNode.absolutePath()).isEqualTo(namePath);
 			}
 			catch (Exception e) {
 				fail(name, e);
@@ -770,12 +782,12 @@ public class PrefsControl extends DefaultTestBundleControl {
 	private void testCaseSensitivity(Preferences theNode) {
 		/* Test if keys are case-sensitive */
 		theNode.put("Name", "UPPERCASE");
-		assertEquals("lowercase", theNode.get("name", "lowercase"));
+		assertThat(theNode.get("name", "lowercase")).isEqualTo("lowercase");
 
 		/* Test if node names are case-sensitive */
 		theNode.node("NameOfChild");
 		try {
-			assertFalse(theNode.nodeExists("nameofchild"));
+			assertThat(theNode.nodeExists("nameofchild")).isFalse();
 		}
 		catch (BackingStoreException e) {
 			fail("node exists error", e);
@@ -794,7 +806,7 @@ public class PrefsControl extends DefaultTestBundleControl {
 	private void clearKeys(Preferences theNode) {
 		try {
 			theNode.clear();
-			assertEquals(0, theNode.keys().length);
+			assertThat(theNode.keys()).isEmpty();
 		}
 		catch (Exception e) {
 			fail("clear keys", e);
@@ -808,7 +820,7 @@ public class PrefsControl extends DefaultTestBundleControl {
 				Preferences child = theNode.node(children[i]);
 				child.removeNode();
 			}
-			assertEquals(0, theNode.childrenNames().length);
+			assertThat(theNode.childrenNames()).isEmpty();
 		}
 		catch (Exception e) {
 			fail("clear children", e);
